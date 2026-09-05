@@ -1,0 +1,10 @@
+name: flat_rate
+description: A private logbook for a flat-rate automotive technician.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dev_dependencies:
+  test: ^1.25.0
