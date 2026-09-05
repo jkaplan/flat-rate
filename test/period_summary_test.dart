@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flat_rate/logic/pay_periods.dart';
 import 'package:flat_rate/logic/period_summary.dart';
 import 'package:flat_rate/model/job.dart';

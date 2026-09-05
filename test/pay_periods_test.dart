@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flat_rate/logic/pay_periods.dart';
 
 // Monday 1 September 2026 is the anchor in most of these — the first day of

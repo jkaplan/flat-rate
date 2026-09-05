@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flat_rate/logic/ratio_display.dart';
 
 void main() {
