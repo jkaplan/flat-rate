@@ -17,7 +17,7 @@ is and what happens next.
 
 | Page | What it covers |
 |---|---|
-| [docs/PLAN.md](docs/PLAN.md) | The living plan, the two ratios, and the seven things that have to be true |
+| [docs/PLAN.md](docs/PLAN.md) | The living plan, the two ratios, and the eight things that have to be true |
 | [docs/plans/paper-week.md](docs/plans/paper-week.md) | The probe that gates the build, and its prediction |
 | [docs/TASKS.md](docs/TASKS.md) | What is queued, waiting, parked and done |
 | [docs/COMMANDS.md](docs/COMMANDS.md) | Every command, and what it is for |
