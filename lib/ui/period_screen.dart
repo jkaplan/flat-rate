@@ -72,9 +72,23 @@ class _PeriodScreenState extends State<PeriodScreen> {
           const SizedBox(height: 16),
           Row(
             children: [
-              _Ratio(label: 'Efficiency', value: summary.efficiency.asPercent),
-              _Ratio(label: 'Proficiency', value: summary.proficiency.asPercent),
+              _Ratio(label: 'Vs schedule', value: summary.efficiency.asPercent),
+              _Ratio(label: 'Vs hours worked', value: summary.proficiency.asPercent),
             ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Vs hours worked blends job speed with time spent off jobs. It is '
+            'not a measure of how fast the work itself went.',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: 16),
+          _Ratio(
+            label: summary.jobsWithActualHours == summary.jobCount
+                ? 'Job-time performance'
+                : 'Job-time performance '
+                    '(${summary.jobsWithActualHours} of ${summary.jobCount} jobs)',
+            value: summary.jobTimePerformance.asPercent,
           ),
           const SizedBox(height: 16),
           _line('Flagged', summary.flaggedHours),
@@ -85,7 +99,8 @@ class _PeriodScreenState extends State<PeriodScreen> {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 '${summary.jobsMissingActualHours} of ${summary.jobCount} jobs '
-                'have no actual time',
+                'have no actual time — job-time performance excludes them '
+                'rather than counting them as zero',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),

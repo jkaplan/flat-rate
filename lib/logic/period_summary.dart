@@ -16,6 +16,8 @@ class PeriodSummary {
     required this.clockedHours,
     required this.jobCount,
     required this.jobsMissingActualHours,
+    required this.matchedFlaggedHours,
+    required this.matchedActualHours,
     required this.flaggedByPayType,
     required this.flaggedByWriter,
   });
@@ -30,14 +32,42 @@ class PeriodSummary {
   /// the assumption this build proceeds without testing.
   final int jobsMissingActualHours;
 
+  /// Flagged hours from jobs that also have actual hours recorded — the
+  /// matched set that [jobTimePerformance] divides. Excludes any job still
+  /// missing its second number, rather than treating that job as a zero.
+  final double matchedFlaggedHours;
+
+  /// Actual hours from the same matched set.
+  final double matchedActualHours;
+
   final Map<PayType, double> flaggedByPayType;
   final Map<int, double> flaggedByWriter;
 
+  int get jobsWithActualHours => jobCount - jobsMissingActualHours;
+
+  /// Recorded output against the schedule: did the shop hand out enough work
+  /// to fill the hours it scheduled? Answers a dispatch question, not a job
+  /// speed question.
   double? get efficiency =>
       ratios.efficiency(flagged: flaggedHours, available: scheduledHours);
 
+  /// Recorded output against every hour clocked, on jobs or off them. This is
+  /// a utilization number — it blends job speed with time spent outside jobs
+  /// — and it is identical to [efficiency] whenever scheduled and clocked
+  /// hours match, because both are then the same denominator applied to the
+  /// same numerator. It does not measure how a technician performs on the
+  /// jobs they were actually given; [jobTimePerformance] does that.
   double? get proficiency =>
       ratios.proficiency(flagged: flaggedHours, clocked: clockedHours);
+
+  /// Flagged hours against actual job hours, for jobs where actual hours were
+  /// recorded — the only measure of job speed itself. Null when no job in the
+  /// period has a second number to compare against, and never treats a
+  /// missing actual time as zero. Read alongside [jobsWithActualHours]: a
+  /// performance number built from one job out of twelve is not the same
+  /// claim as one built from twelve out of twelve.
+  double? get jobTimePerformance =>
+      ratios.proficiency(flagged: matchedFlaggedHours, clocked: matchedActualHours);
 }
 
 PeriodSummary summarise({
@@ -56,6 +86,8 @@ PeriodSummary summarise({
     byWriter[job.writerId] = (byWriter[job.writerId] ?? 0) + job.flaggedHours;
   }
 
+  final matched = inPeriod.where((job) => job.isComplete);
+
   return PeriodSummary(
     period: period,
     flaggedHours: _sum(inPeriod.map((job) => job.flaggedHours)),
@@ -63,6 +95,8 @@ PeriodSummary summarise({
     clockedHours: _sum(daysInPeriod.map((day) => day.clockedHours ?? 0)),
     jobCount: inPeriod.length,
     jobsMissingActualHours: inPeriod.where((job) => !job.isComplete).length,
+    matchedFlaggedHours: _sum(matched.map((job) => job.flaggedHours)),
+    matchedActualHours: _sum(matched.map((job) => job.actualHours!)),
     flaggedByPayType: Map.unmodifiable(byPayType),
     flaggedByWriter: Map.unmodifiable(byWriter),
   );

@@ -115,6 +115,64 @@ void main() {
     });
   });
 
+  group('job-time performance is its own measure, matched jobs only', () {
+    // proficiency (flagged / total clocked) and job-time performance
+    // (flagged / actual job hours, matched set) answer different questions.
+    // When every clocked hour was spent on a job, they agree — that was the
+    // blind spot: the two numbers looked distinct but were computing the
+    // same thing whenever nothing happened outside a job.
+    test('undefined when no job has recorded actual hours', () {
+      final summary = summarise(
+        period: period,
+        jobs: [job(flagged: 4.0, actual: null)],
+        days: [workDay()],
+      );
+      expect(summary.jobTimePerformance, isNull);
+    });
+
+    test('uses only the matched set, not every job', () {
+      // One job beats book time 2:1, the other has no actual time at all.
+      // A job missing its second number must not silently count as zero.
+      final summary = summarise(
+        period: period,
+        jobs: [
+          job(ro: '1', flagged: 4.0, actual: 2.0),
+          job(ro: '2', flagged: 3.0, actual: null),
+        ],
+        days: [workDay()],
+      );
+      expect(summary.jobTimePerformance, closeTo(2.0, 1e-9));
+    });
+
+    test('diverges from proficiency once clocked time includes non-job time', () {
+      // 6 flagged, 2 actual on the one job that recorded it; clocked 8 for
+      // the day. Proficiency blends in the other 6 hours; job-time
+      // performance does not.
+      final summary = summarise(
+        period: period,
+        jobs: [job(flagged: 6.0, actual: 2.0)],
+        days: [workDay(scheduled: 8.0, clocked: 8.0)],
+      );
+      expect(summary.proficiency, closeTo(0.75, 1e-9));
+      expect(summary.jobTimePerformance, closeTo(3.0, 1e-9));
+      expect(summary.proficiency, isNot(equals(summary.jobTimePerformance)));
+    });
+
+    test('reports how many jobs are in the matched set', () {
+      final summary = summarise(
+        period: period,
+        jobs: [
+          job(ro: '1', flagged: 1.0, actual: 1.0),
+          job(ro: '2', flagged: 1.0, actual: null),
+          job(ro: '3', flagged: 1.0, actual: null),
+        ],
+        days: [workDay()],
+      );
+      expect(summary.jobsWithActualHours, equals(1));
+      expect(summary.jobCount, equals(3));
+    });
+  });
+
   group('a period with nothing in it is empty, not zero', () {
     test('no jobs and no days means both ratios are undefined', () {
       final summary = summarise(period: period, jobs: const [], days: const []);
