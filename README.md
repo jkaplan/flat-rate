@@ -22,6 +22,9 @@ this machine.
 
 ## Docs
 
+The planning docs and `readings/` stay on this machine and out of git: they hold personal and
+business details. Only `docs/COMMANDS.md` and `docs/mockups/` are tracked.
+
 | Page | What it covers |
 |---|---|
 | [docs/HANDOFF.md](docs/HANDOFF.md) | State as of the last session, and what is not yet trustworthy — read this first |
