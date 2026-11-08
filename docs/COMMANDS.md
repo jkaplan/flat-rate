@@ -23,3 +23,5 @@ ahead of the real entry and is worth removing before it confuses somebody.
 
 **Trigger:** if an invocation with flags is typed twice, it becomes a named command
 before it is typed a third time, and it is listed here.
+| `git private <git command>` | Git for the private planning docs and research, which the main repo ignores. Same commands as git: `git private status`, `git private add docs/PLAN.md`, `git private commit`, `git private push`. Lives in `.private-git/`; the alias is in this repo's local git config |
+| `git private add -f <path>` | Start tracking a new private file. The `-f` is needed because the main repo ignores it |

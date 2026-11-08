@@ -17,3 +17,6 @@ readings/
 docs/*
 !docs/COMMANDS.md
 !docs/mockups/
+
+# The private planning docs have their own repo here; see docs/COMMANDS.md.
+.private-git/
